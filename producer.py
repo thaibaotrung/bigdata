@@ -4,7 +4,6 @@ import csv
 import time
 from kafka import KafkaProducer
 
-producer = KafkaProducer(bootstrap_servers='localhost:9092')
 start_time = time.time()
 
 pages = []
@@ -32,9 +31,7 @@ for page in pages:
         values_list.append(row_values)
         
 # Gửi các bản ghi vào topic 'trung'
-for row in values_list:
-    message = ','.join(row).encode('utf-8')
-    producer.send('trung', value=message)
+
 # Lưu dữ liệu vào file CSV
 with open('output.csv', 'w', newline='') as file:
     writer = csv.writer(file)
