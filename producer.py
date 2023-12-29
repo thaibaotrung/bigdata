@@ -4,6 +4,7 @@ import csv
 import time
 from kafka import KafkaProducer
 
+producer = KafkaProducer(bootstrap_servers='masternode:9092')
 start_time = time.time()
 
 pages = []
@@ -31,15 +32,16 @@ for page in pages:
         values_list.append(row_values)
         
 # Gửi các bản ghi vào topic 'trung'
-
+for row in values_list:
+    message = ','.join(row).encode('utf-8')
+    producer.send('trung', value=message)
 # Lưu dữ liệu vào file CSV
 with open('output.csv', 'w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['Symbol', 'Name', 'Last', 'Change', 'Change %', 'Volume', 'Time'])
+    writer.writerow(['Name', 'Price', 'Change', 'Open', 'High', 'Low', 'Volume'])
 
     for row in values_list:
         writer.writerow(row)
 
 print('Dữ liệu đã được lưu vào file CSV.')
 print('--- %s seconds ---' % (time.time() - start_time))
-
